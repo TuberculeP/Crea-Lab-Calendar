@@ -2,7 +2,6 @@
   <vue-cal selected-date="2024-10-16" :time-from="9 * 60" :time-to="18 * 60" :disable-views="['years', 'year', 'month']"
     hide-view-selector hide-weekends style="height: 80vh; width: 80vw"
     :editable-events=" { title: true, drag: false, resize: true, delete: true, create: false }" :events="events" @event-mouse-enter="testEvents($event)"/>
-    @event-click="onEventClick" />
 
   <v-dialog v-model="showDialog" v-if="showDialog" persistent max-width="600px">
     <v-card>
