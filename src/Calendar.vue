@@ -2,14 +2,13 @@
 import { ref, watch, reactive, onMounted } from "vue";
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
-import { getMachines, getEvents } from "./utils/events";
-
+import { getMachines } from "./utils/api/machines";
+import { getEvents } from "./utils/api/events";
 
 const state = reactive({
   isLoading: false,
   activeView: "week",
 });
-
 
 const machines = ref([]);
 const events = ref([]);
@@ -29,7 +28,6 @@ async function loadData(date: Date) {
   await getMachines().then((data) => {
     machines.value = data;
   });
-  console.log(machines.value);
 
   await getEvents().then((data) => {
     events.value = data;
@@ -125,6 +123,9 @@ onMounted(() => {
               {{ assignee.first_name[0] }}{{ assignee.last_name[0] }}
             </div>
         </div>
+      </div>
+      <div v-else>
+        {{ event.title }}
       </div>
     </template>
   </vue-cal>
