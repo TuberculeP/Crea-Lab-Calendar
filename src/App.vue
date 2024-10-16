@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onBeforeMount, onMounted } from "vue";
 import Calendar from "./Calendar.vue";
+import Modal from "./CloseDateModal.vue";
 import useConnexion from "./composables/useConnexion";
 import { apiClient } from "./utils/api/api_client";
 import { readItems } from "@directus/sdk";
@@ -29,5 +30,6 @@ onMounted(async () => {
 </script>
 
 <template>
+  <Modal :isVisible="true" :bodyComponent="Calendar" />
   <Calendar />
 </template>
