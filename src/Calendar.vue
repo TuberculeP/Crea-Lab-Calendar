@@ -60,6 +60,7 @@ function hideTooltip() {
 onMounted(() => {
   loadData()
 });
+
 </script>
 
 <template>
@@ -154,4 +155,13 @@ onMounted(() => {
   pointer-events: none;
 }
 
+.vuecal__cell-split.room {
+  background-color: rgba(0, 128, 255, 0.1);
+}
+.vuecal__cell-split.printer-3d {
+  background-color: rgba(255, 0, 212, 0.1);
+}
+.vuecal__cell-split.sewing-machine {
+  background-color: rgba(0, 255, 136, 0.1);
+}
 </style>
