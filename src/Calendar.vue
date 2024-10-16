@@ -3,6 +3,8 @@ import { ref, watch, reactive, onMounted } from "vue";
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 import { getMachines, getEvents } from "./utils/events";
+import Plan from "./components/Plan.vue";
+import { PlanType } from "./types";
 
 const state = reactive({
   isLoading: false,
@@ -11,6 +13,9 @@ const state = reactive({
 
 const machines = ref([]);
 const events = ref([]);
+
+let plan = ref<PlanType | null>(null);
+const activeModal = ref(false);
 
 const tooltip = ref(null);
 const tooltipVisible = ref(false);
@@ -52,12 +57,18 @@ function hideTooltip() {
   tooltipVisible.value = false;
 }
 
+const OpenModal = (y: any) => {
+  plan = y;
+  activeModal.value = !activeModal.value;
+};
+
 onMounted(() => {
   loadData();
 });
 </script>
 
 <template>
+  <Plan v-if="!!(plan && plan.id)" :isActive="activeModal" :plan="plan" />
   <template v-if="!state.isLoading">
     <vue-cal
       :time-from="8 * 60"
@@ -73,9 +84,18 @@ onMounted(() => {
           ? events
           : events.filter((event) => !event.isMachineSlot)
       "
-      editable-events
+      :editable-events="{
+        title: false,
+        drag: false,
+        resize: false,
+        delete: false,
+        create: true,
+      }"
+      @event-mouse-enter="OpenModal($event)"
       v-model:active-view="state.activeView"
+      class="vuecal--full-height-delete"
     >
+      >
       <template #event="{ event }">
         <div
           v-if="event.isMachineSlot && state.activeView === 'day'"
