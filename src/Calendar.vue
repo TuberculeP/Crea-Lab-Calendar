@@ -13,6 +13,7 @@ const state = reactive({
 
 const machines = ref([]);
 const events = ref([]);
+const closeDates = ref([]);
 
 const tooltip = ref(null);
 const tooltipVisible = ref(false);
@@ -33,6 +34,13 @@ async function loadData(date: Date) {
   await getEvents().then((data) => {
     events.value = data;
   });
+
+  const dates = getCloseDates();
+  // Transform closeDates to match VueCal's event structure
+  closeDates.value = dates.map((date) => ({
+    ...date,
+    title: 'Closed',
+  }));
 
   state.isLoading = false;
 }
@@ -56,11 +64,30 @@ function hideTooltip() {
   tooltipVisible.value = false;
 }
 
+const getCloseDates = () => {
+  const now = new Date();
+
+  const start = new Date(now);
+  start.setHours(9, 0, 0, 0);
+
+  const end = new Date(now);
+  end.setHours(17, 0, 0, 0);
+
+  return [
+    {
+      id: 1,
+      start,
+      end,
+      monthlyRecurrent: false
+    },
+  ]
+
+  // api get request
+};
 
 onMounted(() => {
   loadData()
 });
-
 </script>
 
 <template>
@@ -74,7 +101,7 @@ onMounted(() => {
     :disable-views="['years', 'year']"
     style="height: 80vh; width: 80vw"
     :splitDays="state.activeView === 'day' ? machines : undefined"
-    :events="state.activeView === 'day' ? events : events.filter(event => !event.isMachineSlot)"
+    :events="state.activeView === 'day' ? [...events, ...closeDates] : [...events, ...closeDates].filter(event => !event.isMachineSlot)"
     editable-events
     v-model:active-view="state.activeView"
   >

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@directus/sdk": "^17.0.2",
+    "radix-vue": "^1.9.7",
     "vue": "^3.4.37",
     "vue-cal": "^4.10.0"
   },
