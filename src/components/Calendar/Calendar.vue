@@ -1,12 +1,27 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
+<<<<<<< HEAD
 import  PreviewModal from "./PreviewModal.vue";
+=======
+>>>>>>> 5d0951b (fix)
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 import { getMachines } from "../../utils/api/machines";
 import { getEvents } from "../../utils/api/events";
 import { generateEventColor } from "../../utils/events";
+<<<<<<< HEAD
 
+=======
+import {
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogOverlay,
+  DialogPortal,
+  DialogRoot,
+  DialogTitle,
+} from "radix-vue";
+>>>>>>> 5d0951b (fix)
 
 const state = reactive({
   isLoading: false,
@@ -16,7 +31,6 @@ const state = reactive({
 const machines = ref([]);
 const events = ref([]);
 const closeDates = ref([]);
-
 
 const showDialog = ref(false);
 const selectedEvent = ref(null);
@@ -88,8 +102,6 @@ const getCloseDates = () => {
   ];
 };
 
-};
-
 function onEventClick(event) {
   selectedEvent.value = event;
   showDialog.value = true;
@@ -101,7 +113,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <Plan v-if="!!(plan && plan.id)" :isActive="activeModal" :plan="plan" />
   <template v-if="!state.isLoading">
     <vue-cal
       :time-from="8 * 60"
