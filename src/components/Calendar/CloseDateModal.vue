@@ -49,7 +49,7 @@ const validateForm = () => {
           > Start Date </label>
           <input
             id="start-date"
-            type="datetime-local"
+            type="date"
             class="Input"
             v-model="startDate"
           >
@@ -61,7 +61,7 @@ const validateForm = () => {
           > End Date </label>
           <input
             id="end-date"
-            type="datetime-local"
+            type="date"
             class="Input"
             v-model="endDate"
           >

@@ -179,6 +179,7 @@ onMounted(() => {
 <style>
 .vuecal__cell--disabled {
   background-color: #e05b5b;
+  z-index: 0;
 }
 .vuecal__cell--disabled::before {
   content: "Closed";
