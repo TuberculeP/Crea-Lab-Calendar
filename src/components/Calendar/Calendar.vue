@@ -71,7 +71,7 @@ onMounted(() => {
       :events-on-month-view="'short'"
       show-week-numbers
       :disable-views="['years', 'year']"
-      :disable-days="['2024-10-16']"
+      :disable-days="closeDates"
       style="height: 80vh; width: 80vw"
       :splitDays="state.activeView === 'day' ? machines : undefined"
       :events="
