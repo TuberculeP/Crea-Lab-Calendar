@@ -11,6 +11,10 @@ import {
   DialogTrigger,
 } from "radix-vue";
 
+import VueCal from 'vue-cal';
+import 'vue-cal/dist/vuecal.css';
+import { deleteItem } from "@directus/sdk";
+
 const props = defineProps({
   selectedEvent: Object,
   modelValue: Boolean,
@@ -22,13 +26,14 @@ const emit = defineEmits(["update:modelValue"]);
 const updateModelValue = (newValue) => {
   emit("update:modelValue", newValue);
 };
+
+const deleteEvent = async(id: number) => {
+  console.log("delete event");
+  const res = await apiClient.request(deleteItem('CalendarEvent', id));
+};
 </script>
 <template>
-  <DialogRoot
-    v-if="props.selectedEvent"
-    :open="modelValue"
-    @update:open="updateModelValue"
-  >
+  <DialogRoot v-if="props.selectedEvent" :open="modelValue" @update:open="updateModelValue">
     <DialogOverlay class="DialogOverlay" />
     <DialogPortal>
       <DialogContent class="DialogContent">
@@ -42,9 +47,9 @@ const updateModelValue = (newValue) => {
             <h3>Machine:</h3>
             <p>
               {{
-                props.machines.find(
-                  (machine) => machine.id === selectedEvent.split
-                ).label
+              props.machines.find(
+              (machine) => machine.id === selectedEvent.split
+              ).label
               }}
             </p>
           </div>
@@ -56,10 +61,7 @@ const updateModelValue = (newValue) => {
 
           <div v-if="props.selectedEvent?.assignee?.length > 0">
             <h3>Participants :</h3>
-            <div
-              class="assignees-on-card"
-              v-for="assignee in props.selectedEvent.assignee"
-            >
+            <div class="assignees-on-card" v-for="assignee in props.selectedEvent.assignee">
               <div class="user-tag">
                 {{ assignee.directus_users_id.first_name[0]
                 }}{{ assignee.directus_users_id.last_name[0] }}
@@ -78,8 +80,15 @@ const updateModelValue = (newValue) => {
           </div>
         </DialogDescription>
         <DialogClose as-child>
-          <button class="Button" @click="updateModelValue(false)">Close</button>
+
+
         </DialogClose>
+        <v-btn @click="updateModelValue(false)" base-color="red">
+          fermer
+        </v-btn>
+        <v-btn rounded="lg" @click="deleteEvent(props.selectedEvent.id)" class="btn-delete" color="red" variant="tonal" size="x-large" @click="deleteEvent">
+          delete
+        </v-btn>
       </DialogContent>
     </DialogPortal>
   </DialogRoot>
@@ -210,5 +219,9 @@ fieldset {
 }
 .vuecal__cell-split.sewing-machine {
   background-color: rgba(0, 255, 136, 0.1);
+}
+.btn-delete {
+  margin-top: 10px;
+  background-color: red;
 }
 </style>
