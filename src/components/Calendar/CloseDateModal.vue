@@ -10,14 +10,17 @@ import {
   DialogTrigger,
 } from 'radix-vue'
 import { ref } from 'vue';
+import { createClosedPeriod } from '../../utils/api/closed-periods';
 
 const startDate = ref('');
 const endDate = ref('');
 const monthlyRecurrent = ref(false);
 
-const validateForm = () => {
-  console.log('Start Date:', startDate.value);
-  console.log('End Date:', endDate.value);
+const validateForm = async () => {
+  await createClosedPeriod({
+    start_date: startDate.value,
+    end_date: endDate.value,
+  });
   console.log('Monthly Recurrent:', monthlyRecurrent.value);
   
   // api post request
