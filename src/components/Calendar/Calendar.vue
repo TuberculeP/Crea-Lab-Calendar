@@ -38,8 +38,6 @@ async function loadData() {
   await getEvents().then((data) => {
     events.value = data;
   });
-
-  console.table([...events.value, ...closeDates.value]);
 }
 
 function showTooltip(event: MouseEvent, content: string) {
@@ -73,12 +71,13 @@ onMounted(() => {
       :events-on-month-view="'short'"
       show-week-numbers
       :disable-views="['years', 'year']"
+      :disable-days="['2024-10-16']"
       style="height: 80vh; width: 80vw"
       :splitDays="state.activeView === 'day' ? machines : undefined"
       :events="
         state.activeView === 'day'
-          ? [...events, ...closeDates]
-          : [...events, ...closeDates].filter((event) => !event.isMachineSlot)
+          ? events
+          : events.filter((event) => !event.isMachineSlot)
       "
       editable-events
       v-model:active-view="state.activeView"
@@ -174,5 +173,17 @@ onMounted(() => {
 }
 .vuecal__cell-split.sewing-machine {
   background-color: rgba(0, 255, 136, 0.1);
+}
+</style>
+
+<style>
+.vuecal__cell--disabled {
+  background-color: #e05b5b;
+}
+.vuecal__cell--disabled::before {
+  content: "Closed";
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
 }
 </style>
