@@ -4,7 +4,7 @@ import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 import { getMachines } from "../../utils/api/machines";
 import { getEvents } from "../../utils/api/events";
-import { getClosedPeriods } from "../../utils/api/closed-periods";
+import { getFormatedClosedPeriods } from "../../utils/api/closed-periods";
 
 const state = reactive({
   isLoading: false,
@@ -26,7 +26,7 @@ const tooltipStyle = ref({
 async function loadData() {
   state.isLoading = true;
 
-  const dates = await getClosedPeriods();
+  const dates = await getFormatedClosedPeriods();
   closeDates.value = dates;
 
   state.isLoading = false;
