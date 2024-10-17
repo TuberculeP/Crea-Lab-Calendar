@@ -15,6 +15,6 @@ export async function getEvents() {
             }
         ],
     }));
-
+console.log(events);
     return events.map((event: any) => formatEvent(event));
 }
