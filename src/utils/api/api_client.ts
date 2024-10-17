@@ -1,8 +1,7 @@
-import { authentication, createDirectus, realtime, rest } from "@directus/sdk";
+import { authentication, createDirectus, rest } from "@directus/sdk";
 
 const apiClient = createDirectus("https://directus-ucmn.onrender.com")
-  .with(authentication())
-  .with(rest())
-  .with(realtime());
+  .with(authentication("json"))
+  .with(rest());
 
 export { apiClient };

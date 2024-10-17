@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, watchEffect } from "vue";
-import { machines } from "./configs/machines";
+import { machines } from "../../configs/machines";
 
 const props = defineProps({
-  selectedMachine: Number
+  selectedMachine: Number,
 });
 
 const internalSelectedMachine = ref(props.selectedMachine);

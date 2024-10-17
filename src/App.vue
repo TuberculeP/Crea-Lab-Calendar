@@ -1,64 +1,28 @@
 <script setup lang="ts">
-import { onBeforeMount, onMounted, ref } from "vue";
-import Calendar from "./Calendar.vue";
-import Modal from "./CloseDateModal.vue";
-import useConnexion from "./composables/useConnexion";
-import { apiClient } from "./utils/api/api_client";
-import { readItems } from "@directus/sdk";
+import { onMounted } from "vue";
+import Home from "./components/Home.vue";
+import { useConnexion } from "./composables/useConnexion";
 
-const { isConnected, connect } = useConnexion();
+const { isConnected, localTestConnect } = useConnexion();
 
-const isLoading = ref(true);
-
-onBeforeMount(async () => {
-  if (!isConnected.value) {
-    const { access_token } =
-      (await apiClient.login(
-        import.meta.env.VITE_DIRECTUS_TEST_EMAIL,
-        import.meta.env.VITE_DIRECTUS_TEST_PASSWORD
-      )) || {};
-    if (!access_token) {
-      console.error("Failed to login");
-      return;
-    }
-    await connect(access_token);
-  }
-});
-
-onMounted(async () => {
-  isLoading.value = true;
-  const results = await apiClient.request(readItems("CalendarEvent"));
-  isLoading.value = false;
+onMounted(() => {
+  localTestConnect();
 });
 </script>
 
 <template>
-  <div class="page" v-if="!isLoading">
-    <div class="navbar">
-      <h1 class="title">CreaLab Planning</h1>
-
-      <div class="admin-panel">
-        <p>Admin actions</p>
-        <Modal :isVisible="true" :bodyComponent="Calendar" />
-      </div>
-    </div>
-    <Calendar />
-  </div>
-    <!-- LOADER -->
-    <template v-else>
-    <div class="spin">Loading ...</div>
-  </template>
+  <Home v-if="isConnected" />
+  <div v-else>Chargement...</div>
 </template>
 
 <style scoped>
-
 .admin-panel {
   display: flex;
   flex-direction: column;
   align-items: start;
   justify-content: center;
 }
-.title{
+.title {
   color: white;
   font-size: large;
 }
@@ -67,8 +31,8 @@ onMounted(async () => {
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  margin: 0!important;
-  background-color: #262D34;
+  margin: 0 !important;
+  background-color: #262d34;
 }
 
 .page {

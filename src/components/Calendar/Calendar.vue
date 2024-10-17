@@ -2,8 +2,8 @@
 import { ref, watch, reactive, onMounted } from "vue";
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
-import { getMachines } from "./utils/api/machines";
-import { getEvents } from "./utils/api/events";
+import { getMachines } from "../../utils/api/machines";
+import { getEvents } from "../../utils/api/events";
 
 const state = reactive({
   isLoading: false,
@@ -16,10 +16,10 @@ const closeDates = ref([]);
 
 const tooltip = ref(null);
 const tooltipVisible = ref(false);
-const tooltipContent = ref('');
+const tooltipContent = ref("");
 const tooltipStyle = ref({
-  top: '0px',
-  left: '0px'
+  top: "0px",
+  left: "0px",
 });
 
 async function loadData(date: Date) {
@@ -37,13 +37,11 @@ async function loadData(date: Date) {
   // Transform closeDates to match VueCal's event structure
   closeDates.value = dates.map((date) => ({
     ...date,
-    title: 'Closed',
+    title: "Closed",
   }));
 
   state.isLoading = false;
 }
-
-
 
 function showTooltip(event: MouseEvent, content: string) {
   tooltipContent.value = content;
@@ -53,7 +51,7 @@ function showTooltip(event: MouseEvent, content: string) {
     const rect = (event.target as HTMLElement).getBoundingClientRect();
     tooltipStyle.value = {
       top: `${rect.bottom + window.scrollY + 5}px`,
-      left: `${rect.left + window.scrollX}px`
+      left: `${rect.left + window.scrollX}px`,
     };
   }
 }
@@ -76,20 +74,20 @@ const getCloseDates = () => {
       id: 1,
       start,
       end,
-      monthlyRecurrent: false
+      monthlyRecurrent: false,
     },
-  ]
+  ];
 
   // api get request
 };
 
 onMounted(() => {
-  loadData()
+  loadData();
 });
 </script>
 
 <template>
-
+  <template v-if="!state.isLoading">
     <vue-cal
       :time-from="8 * 60"
       :time-to="19 * 60"
@@ -99,13 +97,16 @@ onMounted(() => {
       :disable-views="['years', 'year']"
       style="height: 80vh; width: 80vw"
       :splitDays="state.activeView === 'day' ? machines : undefined"
-      :events="state.activeView === 'day' ? [...events, ...closeDates] : [...events, ...closeDates].filter(event => !event.isMachineSlot)"
+      :events="
+        state.activeView === 'day'
+          ? [...events, ...closeDates]
+          : [...events, ...closeDates].filter((event) => !event.isMachineSlot)
+      "
       editable-events
       v-model:active-view="state.activeView"
     >
-
       <template #event="{ event }">
-        <div 
+        <div
           v-if="event.isMachineSlot && state.activeView === 'day'"
           class="event-cell"
         >
@@ -113,15 +114,15 @@ onMounted(() => {
             <div class="title">{{ event.title }}</div>
           </div>
           <div class="assignees">
-              <div 
-                v-for="assignee in event.assignees" 
-                :key="assignee.id"
-                class="user-tag"
-                @mouseenter="showTooltip($event, assignee.email)"
-                @mouseleave="hideTooltip"
-              >
-                {{ assignee.first_name[0] }}{{ assignee.last_name[0] }}
-              </div>
+            <div
+              v-for="assignee in event.assignees"
+              :key="assignee.id"
+              class="user-tag"
+              @mouseenter="showTooltip($event, assignee.email)"
+              @mouseleave="hideTooltip"
+            >
+              {{ assignee.first_name[0] }}{{ assignee.last_name[0] }}
+            </div>
           </div>
         </div>
         <div v-else>
@@ -129,15 +130,21 @@ onMounted(() => {
         </div>
       </template>
     </vue-cal>
-
-  <!-- TOOLTIP -->
-  <div v-show="tooltipVisible" ref="tooltip" class="tooltip" :style="tooltipStyle">
+  </template>
+  <template v-else>
+    <div class="spin">Loading ...</div>
+  </template>
+  <div
+    v-show="tooltipVisible"
+    ref="tooltip"
+    class="tooltip"
+    :style="tooltipStyle"
+  >
     {{ tooltipContent }}
   </div>
 </template>
 
 <style scoped>
-
 .event {
   display: flex;
   flex-direction: column;
