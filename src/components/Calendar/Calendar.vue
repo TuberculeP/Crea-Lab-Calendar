@@ -62,6 +62,11 @@ function hideTooltip() {
   tooltipVisible.value = false;
 }
 
+function onEventClick(event) {
+  selectedEvent.value = event;
+  showDialog.value = true;
+}
+
 onMounted(() => {
   loadData();
 });
