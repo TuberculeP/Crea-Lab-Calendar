@@ -19,7 +19,6 @@ const validateForm = () => {
   console.log('Start Date:', startDate.value);
   console.log('End Date:', endDate.value);
   console.log('Monthly Recurrent:', monthlyRecurrent.value);
-  
   // api post request
 };
 </script>
@@ -85,7 +84,7 @@ const validateForm = () => {
         <div :style="{ display: 'flex', marginTop: 25, justifyContent: 'flex-end' }">
           <DialogClose as-child>
             <button
-              class="Button green"
+              class="Button orange"
               @click="validateForm"
             >
               Add close date
@@ -120,6 +119,7 @@ fieldset
   position: fixed;
   inset: 0;
   animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 999;
 }
 
 .DialogContent {
@@ -135,6 +135,7 @@ fieldset
   max-height: 85vh;
   padding: 25px;
   animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1000;
 }
 .DialogContent:focus {
   outline: none;
@@ -164,6 +165,7 @@ fieldset
   line-height: 1;
   font-weight: 500;
   height: 35px;
+  background-color: #FF6934;
 }
 .Button.grass {
   background-color: #ffffff;
@@ -176,15 +178,15 @@ fieldset
 .Button.grass:focus {
   box-shadow: 0 0 0 2px black;
 }
-.Button.green {
-  background-color: #c6f6d5; /* var(--green-4) replaced */
-  color: #22543d; /* var(--green-11) replaced */
+.Button.orange {
+  background-color: #ff7848; /* var(--green-4) replaced */
+  color: white; /* var(--green-11) replaced */
 }
-.Button.green:hover {
-  background-color: #9ae6b4; /* var(--green-5) replaced */
+.Button.orange:hover {
+  background-color: #ff6934; /* var(--green-5) replaced */
 }
-.Button.green:focus {
-  box-shadow: 0 0 0 2px #38a169; /* var(--green-7) replaced */
+.Button.orange:focus {
+  box-shadow: 0 0 0 2px #ff6934; /* var(--green-7) replaced */
 }
 
 .IconButton {
@@ -218,7 +220,7 @@ fieldset
 
 .Label {
   font-size: 15px;
-  color: #276749; /* var(--grass-11) replaced */
+  color: #FF6934; /* var(--grass-11) replaced */
   width: 90px;
   text-align: right;
 }
@@ -234,9 +236,9 @@ fieldset
   font-size: 15px;
   line-height: 1;
   color: #ffffff; /* var(--grass-11) replaced */
-  box-shadow: 0 0 0 1px #38a169; /* var(--grass-7) replaced */
+  box-shadow: 0 0 0 1px #FF6934; /* var(--grass-7) replaced */
   height: 35px;
-  background-color: #38a169;
+  background-color: #FF6934;
 }
 .Input:focus {
   box-shadow: 0 0 0 2px #48bb78; /* var(--grass-8) replaced */
@@ -248,7 +250,7 @@ fieldset
   width: 24px;
   height: 24px;
   border-radius: 4px;
-  border: 2px solid #2c7a7b; /* Default border color */
+  border: 2px solid #ff7848; /* Default border color */
   background-color: #ffffff; /* Default background color */
   cursor: pointer;
   transition: background-color 0.2s ease, border-color 0.2s ease;
@@ -276,8 +278,8 @@ fieldset
 
 /* When the checkbox is checked, change the background and show the SVG */
 .Checkbox:checked + .CheckboxIcon {
-  background-color: #38a169; /* Green background when checked */
-  border-color: #2f855a; /* Darker green border when checked */
+  background-color: #FF6934;    /* Green background when checked */
+  border-color: #ff7848; /* Darker green border when checked */
   stroke: white; /* Show the white checkmark */
 }
 
