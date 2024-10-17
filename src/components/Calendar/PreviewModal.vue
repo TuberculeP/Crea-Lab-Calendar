@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps,ref } from 'vue';
+import { defineProps, ref } from "vue";
 import {
   DialogClose,
   DialogContent,
@@ -8,9 +8,8 @@ import {
   DialogPortal,
   DialogRoot,
   DialogTitle,
-  DialogTrigger
-} from 'radix-vue'
-
+  DialogTrigger,
+} from "radix-vue";
 
 const props = defineProps({
   selectedEvent: Object,
@@ -18,77 +17,82 @@ const props = defineProps({
   machines: Array,
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(["update:modelValue"]);
 
 const updateModelValue = (newValue) => {
-  emit('update:modelValue', newValue);
+  emit("update:modelValue", newValue);
 };
 </script>
 <template>
-<DialogRoot :open="modelValue" @update:open="updateModelValue">
+  <DialogRoot
+    v-if="props.selectedEvent"
+    :open="modelValue"
+    @update:open="updateModelValue"
+  >
     <DialogOverlay class="DialogOverlay" />
     <DialogPortal>
       <DialogContent class="DialogContent">
         <DialogTitle class="DialogTitle">
           <h1>
-          {{ props.selectedEvent.title }}
+            {{ props.selectedEvent?.title }}
           </h1>
         </DialogTitle>
         <DialogDescription class="DialogDescription">
-
-        <div v-if="selectedEvent.isMachineSlot">
-          <h3>Machine:</h3>
-          <p>{{ props.machines.find((machine) => machine.id === selectedEvent.split).label }}</p>
-       
-        </div>
-
-        <h3>Description:</h3>
-        <p>{{ props.selectedEvent.description }}</p>
-
-        <div v-if="props.selectedEvent.assignee.length > 0">
-          <h3>Participants :</h3> 
-          <div
-          class="assignees-on-card" 
-          v-for="
-            assignee in props.selectedEvent.assignee
-          ">
-            <div class="user-tag">
-              {{ assignee.directus_users_id.first_name[0] }}{{ assignee.directus_users_id.last_name[0] }}
-            </div>
-            <p>{{ assignee.directus_users_id.email }}</p>
+          <div v-if="props.selectedEvent?.isMachineSlot">
+            <h3>Machine:</h3>
+            <p>
+              {{
+                props.machines.find(
+                  (machine) => machine.id === selectedEvent.split
+                ).label
+              }}
+            </p>
           </div>
-        </div>
-        <div>
-          <h3>Date de début :</h3>
-          <p>{{ new Date(props.selectedEvent.start).toLocaleDateString() }}</p>
 
-          <h3>Date de fin :</h3>
-          <p>{{ new Date(props.selectedEvent.end).toLocaleDateString()  }}</p>
-        </div>
+          <div v-if="props?.selectedEvent?.description">
+            <h3>Description:</h3>
+            <p>{{ props.selectedEvent.description }}</p>
+          </div>
+
+          <div v-if="props.selectedEvent?.assignee?.length > 0">
+            <h3>Participants :</h3>
+            <div
+              class="assignees-on-card"
+              v-for="assignee in props.selectedEvent.assignee"
+            >
+              <div class="user-tag">
+                {{ assignee.directus_users_id.first_name[0]
+                }}{{ assignee.directus_users_id.last_name[0] }}
+              </div>
+              <p>{{ assignee.directus_users_id.email }}</p>
+            </div>
+          </div>
+          <div>
+            <h3>Date de début :</h3>
+            <p>
+              {{ new Date(props.selectedEvent.start).toLocaleDateString() }}
+            </p>
+
+            <h3>Date de fin :</h3>
+            <p>{{ new Date(props.selectedEvent.end).toLocaleDateString() }}</p>
+          </div>
         </DialogDescription>
         <DialogClose as-child>
-          <button
-            class="Button"
-            @click="updateModelValue(false)"
-          >
-            Close
-          </button>
+          <button class="Button" @click="updateModelValue(false)">Close</button>
         </DialogClose>
       </DialogContent>
     </DialogPortal>
   </DialogRoot>
-
 </template>
 
 <style scoped>
 /* reset */
 button,
-fieldset
-{
+fieldset {
   all: unset;
 }
 
-.assignees-on-card{
+.assignees-on-card {
   display: flex;
   flex-direction: row;
   gap: 4px;
@@ -107,7 +111,8 @@ fieldset
 .DialogContent {
   background-color: #ffffff;
   border-radius: 6px;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 10px 38px -10px, rgba(0, 0, 0, 0.2) 0px 10px 20px -15px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 10px 38px -10px,
+    rgba(0, 0, 0, 0.2) 0px 10px 20px -15px;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -137,13 +142,12 @@ fieldset
   line-height: 1.5;
 }
 
-
-.title{
+.title {
   font-size: large;
   padding: 2px;
 }
 
-.description{
+.description {
   font-size: small;
   padding: 2px;
 }
