@@ -134,6 +134,7 @@ fieldset {
 }
 
 .DialogContent {
+  z-index: 3;
   background-color: #ffffff;
   border-radius: 6px;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 10px 38px -10px,
