@@ -19,32 +19,31 @@ export function formatEvent(event: any) {
 }
 
 export const formatMachinesForCalendar = (machines: any) => {
-   return [
+  return [
     {
-        id: -1,
-        class: 'room',
-        label: 'Crealab',
+      id: -1,
+      class: "room",
+      label: "Crealab",
     },
     ...machines.map((machine: any) => ({
-        id: machine.id,
-        class: machine.name.toLowerCase().replace(' ', '-'),
-        label: machine.name,
-    }))
-   ]
-}
+      id: machine.id,
+      class: machine.name.toLowerCase().replace(" ", "-"),
+      label: machine.name,
+    })),
+  ];
+};
 
 export function generateEventColor(eventName: string) {
-    let hash = 0;
-    for (let i = 0; i < eventName.length; i++) {
-      hash = eventName.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    
-    let color = '#';
-    for (let i = 0; i < 3; i++) {
-      const value = (hash >> (i * 8)) & 0xFF;
-      color += ('00' + value.toString(16)).substr(-2);
-    }
-    
-    return {backgroundColor: color, borderColor: color, color: 'white'};
+  let hash = 0;
+  for (let i = 0; i < eventName.length; i++) {
+    hash = eventName.charCodeAt(i) + ((hash << 5) - hash);
   }
-  
+
+  let color = "#";
+  for (let i = 0; i < 3; i++) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += ("00" + value.toString(16)).substr(-2);
+  }
+
+  return { backgroundColor: color, borderColor: color, color: "white" };
+}

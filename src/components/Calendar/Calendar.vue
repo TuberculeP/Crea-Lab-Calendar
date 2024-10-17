@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref, watch, reactive, onMounted } from "vue";
-import  PreviewModal from "./PreviewModal.vue";
+import { ref, reactive, onMounted } from "vue";
+import PreviewModal from "./PreviewModal.vue";
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 import { getMachines } from "../../utils/api/machines";
 import { getEvents } from "../../utils/api/events";
 import { generateEventColor } from "../../utils/events";
-
 
 const state = reactive({
   isLoading: false,
@@ -16,7 +15,6 @@ const state = reactive({
 const machines = ref([]);
 const events = ref([]);
 const closeDates = ref([]);
-
 
 const showDialog = ref(false);
 const selectedEvent = ref(null);
@@ -86,10 +84,9 @@ const getCloseDates = () => {
       monthlyRecurrent: false,
     },
   ];
-
 };
 
-function onEventClick(event) {  
+function onEventClick(event) {
   selectedEvent.value = event;
   showDialog.value = true;
 }
@@ -118,18 +115,11 @@ onMounted(() => {
           ? [...events, ...closeDates]
           : [...events, ...closeDates].filter((event) => !event.isMachineSlot)
       "
-      editable-events
       v-model:active-view="state.activeView"
     >
+      >
       <template #event="{ event }">
-        <div
-          class="event-cell"
-          :style="
-            generateEventColor(
-              event.title
-            )
-          "
-        >
+        <div class="event-cell" :style="generateEventColor(event.title)">
           <div class="event">
             <div class="title">{{ event.title }}</div>
             <p class="description">{{ event.description }}</p>
@@ -139,17 +129,20 @@ onMounted(() => {
               v-for="assignee in event.assignee"
               :key="assignee.directus_users_id.id"
               class="user-tag"
-              @mouseenter="showTooltip($event, assignee.directus_users_id.email)"
+              @mouseenter="
+                showTooltip($event, assignee.directus_users_id.email)
+              "
               @mouseleave="hideTooltip"
             >
-              {{ assignee.directus_users_id.first_name[0] }}{{ assignee.directus_users_id.last_name[0] }}
+              {{ assignee.directus_users_id.first_name[0]
+              }}{{ assignee.directus_users_id.last_name[0] }}
             </div>
           </div>
         </div>
       </template>
     </vue-cal>
   </template>
-  <div v-else class="loader"></div> 
+  <div v-else class="loader"></div>
   <div
     v-show="tooltipVisible"
     ref="tooltip"
@@ -159,7 +152,7 @@ onMounted(() => {
     {{ tooltipContent }}
   </div>
 
-  <PreviewModal 
+  <PreviewModal
     v-if="showDialog"
     :machines="machines"
     v-model="showDialog"
@@ -168,12 +161,12 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.title{
+.title {
   font-size: large;
   padding: 2px;
 }
 
-.description{
+.description {
   font-size: small;
   padding: 2px;
 }

@@ -1,5 +1,7 @@
 import { ref } from "vue";
 import { apiClient } from "../utils/api/api_client";
+import { readMe } from "@directus/sdk";
+import { UserType } from "../types";
 
 const isConnected = ref(false);
 const onDirectusConnectedCallbacks = ref<(() => void)[]>([]);
@@ -33,5 +35,20 @@ export const useConnexion = () => {
     console.timeEnd("login");
   };
 
-  return { onDirectusConnected, isConnected, connect, localTestConnect };
+  const getUser = async (): Promise<UserType> => {
+    const res = await apiClient.request<UserType>(readMe());
+
+    if (Boolean(res && res.email)) throw new Error(`Could not find user`);
+
+    console.log(`User fetched: ${res.first_name}`);
+    return res;
+  };
+
+  return {
+    onDirectusConnected,
+    isConnected,
+    connect,
+    localTestConnect,
+    getUser,
+  };
 };
