@@ -27,7 +27,7 @@ const updateModelValue = (newValue) => {
   emit("update:modelValue", newValue);
 };
 
-const deleteEvent = async(id: number) => {
+const deleteEvent = async (id) => {
   console.log("delete event");
   const res = await apiClient.request(deleteItem('CalendarEvent', id));
 };
@@ -86,7 +86,7 @@ const deleteEvent = async(id: number) => {
         <v-btn @click="updateModelValue(false)" base-color="red">
           fermer
         </v-btn>
-        <v-btn rounded="lg" @click="deleteEvent(props.selectedEvent.id)" class="btn-delete" color="red" variant="tonal" size="x-large" @click="deleteEvent">
+        <v-btn  @click="deleteEvent(props.selectedEvent.id)" class="btn-delete" color="red" variant="tonal" size="x-large" >
           delete
         </v-btn>
       </DialogContent>
