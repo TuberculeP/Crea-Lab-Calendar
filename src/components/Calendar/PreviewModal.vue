@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps,ref } from 'vue';
 import {
   DialogClose,
   DialogContent,
@@ -8,19 +8,24 @@ import {
   DialogPortal,
   DialogRoot,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from 'radix-vue'
 
 
 const props = defineProps({
   selectedEvent: Object,
-  showDialog: Boolean,
+  modelValue: Boolean,
   machines: Array,
 });
 
+const emit = defineEmits(['update:modelValue']);
+
+const updateModelValue = (newValue) => {
+  emit('update:modelValue', newValue);
+};
 </script>
 <template>
-<DialogRoot v-model:open="props.showDialog">
+<DialogRoot :open="modelValue" @update:open="updateModelValue">
     <DialogOverlay class="DialogOverlay" />
     <DialogPortal>
       <DialogContent class="DialogContent">
@@ -63,8 +68,8 @@ const props = defineProps({
         </DialogDescription>
         <DialogClose as-child>
           <button
-            class="Button green"
-            @click="showDialog = false"
+            class="Button"
+            @click="updateModelValue(false)"
           >
             Close
           </button>

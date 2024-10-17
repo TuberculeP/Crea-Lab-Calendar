@@ -159,13 +159,12 @@ onMounted(() => {
     {{ tooltipContent }}
   </div>
 
-
-    <PreviewModal 
-      v-if="showDialog"
-      :machines="machines"
-      :showDialog="showDialog"
-      :selectedEvent="selectedEvent"
-    />
+  <PreviewModal 
+    v-if="showDialog"
+    :machines="machines"
+    v-model="showDialog"
+    :selectedEvent="selectedEvent"
+  />
 </template>
 
 <style scoped>
