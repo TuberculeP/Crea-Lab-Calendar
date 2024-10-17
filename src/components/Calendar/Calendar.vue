@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, watch, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 import { getMachines } from "../../utils/api/machines";
 import { getEvents } from "../../utils/api/events";
+import { getClosedPeriods } from "../../utils/api/closed-periods";
 
 const state = reactive({
   isLoading: false,
@@ -22,25 +23,23 @@ const tooltipStyle = ref({
   left: "0px",
 });
 
-async function loadData(date: Date) {
+async function loadData() {
   state.isLoading = true;
 
-  await getMachines().then((data) => {
-    machines.value = data;
-  });
+  const dates = await getClosedPeriods();
+  closeDates.value = dates;
+
+  state.isLoading = false;
+
+  // await getMachines().then((data) => {
+  //   machines.value = data;
+  // });
 
   await getEvents().then((data) => {
     events.value = data;
   });
 
-  const dates = getCloseDates();
-  // Transform closeDates to match VueCal's event structure
-  closeDates.value = dates.map((date) => ({
-    ...date,
-    title: "Closed",
-  }));
-
-  state.isLoading = false;
+  console.table([...events.value, ...closeDates.value]);
 }
 
 function showTooltip(event: MouseEvent, content: string) {
@@ -59,27 +58,6 @@ function showTooltip(event: MouseEvent, content: string) {
 function hideTooltip() {
   tooltipVisible.value = false;
 }
-
-const getCloseDates = () => {
-  const now = new Date();
-
-  const start = new Date(now);
-  start.setHours(9, 0, 0, 0);
-
-  const end = new Date(now);
-  end.setHours(17, 0, 0, 0);
-
-  return [
-    {
-      id: 1,
-      start,
-      end,
-      monthlyRecurrent: false,
-    },
-  ];
-
-  // api get request
-};
 
 onMounted(() => {
   loadData();
