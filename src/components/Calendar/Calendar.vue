@@ -6,6 +6,7 @@ import "vue-cal/dist/vuecal.css";
 import { getMachines } from "../../utils/api/machines";
 import { getEvents } from "../../utils/api/events";
 import { generateEventColor } from "../../utils/events";
+import { getFormatedClosedPeriods } from "../../utils/api/closed-periods";
 
 const state = reactive({
   isLoading: false,
@@ -27,27 +28,21 @@ const tooltipStyle = ref({
   left: "0px",
 });
 
-async function loadData(date: Date) {
+async function loadData() {
   state.isLoading = true;
 
-  await getMachines().then((data) => {
-    machines.value = data;
-  });
+  const dates = await getFormatedClosedPeriods();
+  closeDates.value = dates;
 
-  console.log(machines);
+  state.isLoading = false;
+  
+  await getMachines().then((data) => {
+      machines.value = data;
+  });
 
   await getEvents().then((data) => {
     events.value = data;
   });
-
-  const dates = getCloseDates();
-  // Transform closeDates to match VueCal's event structure
-  closeDates.value = dates.map((date) => ({
-    ...date,
-    title: "Closed",
-  }));
-
-  state.isLoading = false;
 }
 
 function showTooltip(event: MouseEvent, content: string) {
@@ -66,25 +61,6 @@ function showTooltip(event: MouseEvent, content: string) {
 function hideTooltip() {
   tooltipVisible.value = false;
 }
-
-const getCloseDates = () => {
-  const now = new Date();
-
-  const start = new Date(now);
-  start.setHours(9, 0, 0, 0);
-
-  const end = new Date(now);
-  end.setHours(17, 0, 0, 0);
-
-  return [
-    {
-      id: 1,
-      start,
-      end,
-      monthlyRecurrent: false,
-    },
-  ];
-};
 
 function onEventClick(event) {
   selectedEvent.value = event;
@@ -108,12 +84,13 @@ onMounted(() => {
       today-button
       :on-event-click="onEventClick"
       :disable-views="['years', 'year']"
+      :disable-days="closeDates"
       style="height: 80vh; width: 80vw"
       :splitDays="state.activeView === 'day' ? machines : undefined"
       :events="
         state.activeView === 'day'
-          ? [...events, ...closeDates]
-          : [...events, ...closeDates].filter((event) => !event.isMachineSlot)
+          ? events
+          : events.filter((event) => !event.isMachineSlot)
       "
       v-model:active-view="state.activeView"
     >
@@ -229,5 +206,18 @@ onMounted(() => {
 }
 .vuecal__cell-split.sewing-machine {
   background-color: rgba(0, 255, 136, 0.1);
+}
+</style>
+
+<style>
+.vuecal__cell--disabled {
+  background-color: #e05b5b;
+  z-index: 0;
+}
+.vuecal__cell--disabled::before {
+  content: "Closed";
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
 }
 </style>

@@ -2,6 +2,7 @@
 import { onMounted, ref } from "vue";
 import Calendar from "./Calendar/Calendar.vue";
 import Modal from "./Calendar/CloseDateModal.vue";
+import CloseDateTable from "./Calendar/CloseDateTable.vue";
 import { apiClient } from "../utils/api/api_client";
 import { readItems } from "@directus/sdk";
 
@@ -25,6 +26,7 @@ onMounted(async () => {
       </div>
     </div>
     <Calendar />
+    <CloseDateTable />
   </div>
   <!-- LOADER -->
   <template v-else>
