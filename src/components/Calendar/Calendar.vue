@@ -4,7 +4,8 @@ import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 import { getMachines } from "../../utils/api/machines";
 import { getEvents } from "../../utils/api/events";
-
+import CloseDateModal from "./CloseDateModal.vue";
+import  OpenModal from "./OpenModal.vue";
 const state = reactive({
   isLoading: false,
   activeView: "week",
@@ -13,7 +14,7 @@ const state = reactive({
 const machines = ref([]);
 const events = ref([]);
 const closeDates = ref([]);
-
+const openModal = ref(false);
 const tooltip = ref(null);
 const tooltipVisible = ref(false);
 const tooltipContent = ref("");
@@ -84,9 +85,17 @@ const getCloseDates = () => {
 onMounted(() => {
   loadData();
 });
+
+const OpenDelModal = (i: any) => {
+  console.log("OpenDelModal", i);
+  openModal.value = true;
+  
+
+};
 </script>
 
 <template>
+  <openModal v-if="openModal" @close="openModal = false" />
   <template v-if="!state.isLoading">
     <vue-cal
       :time-from="8 * 60"
@@ -104,6 +113,7 @@ onMounted(() => {
       "
       editable-events
       v-model:active-view="state.activeView"
+      :on-event-click="OpenDelModal"
     >
       <template #event="{ event }">
         <div
