@@ -14,3 +14,34 @@ onMounted(() => {
   <Home v-if="isConnected" />
   <div v-else>Chargement...</div>
 </template>
+
+<style scoped>
+.admin-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+}
+.title {
+  color: white;
+  font-size: large;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  margin: 0 !important;
+  background-color: #262d34;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 0 !important;
+  padding: 1rem;
+  height: 100vh;
+  width: 100%;
+}
+</style>
