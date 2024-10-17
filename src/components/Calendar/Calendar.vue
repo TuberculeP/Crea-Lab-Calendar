@@ -1,27 +1,11 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
-<<<<<<< HEAD
-import  PreviewModal from "./PreviewModal.vue";
-=======
->>>>>>> 5d0951b (fix)
+import PreviewModal from "./PreviewModal.vue";
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 import { getMachines } from "../../utils/api/machines";
 import { getEvents } from "../../utils/api/events";
 import { generateEventColor } from "../../utils/events";
-<<<<<<< HEAD
-
-=======
-import {
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogOverlay,
-  DialogPortal,
-  DialogRoot,
-  DialogTitle,
-} from "radix-vue";
->>>>>>> 5d0951b (fix)
 
 const state = reactive({
   isLoading: false,
@@ -131,16 +115,7 @@ onMounted(() => {
           ? [...events, ...closeDates]
           : [...events, ...closeDates].filter((event) => !event.isMachineSlot)
       "
-      :editable-events="{
-        title: false,
-        drag: false,
-        resize: false,
-        delete: false,
-        create: true,
-      }"
-      @event-mouse-enter="OpenModal($event)"
       v-model:active-view="state.activeView"
-      class="vuecal--full-height-delete"
     >
       >
       <template #event="{ event }">
