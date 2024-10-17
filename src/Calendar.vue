@@ -89,50 +89,48 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-if="!state.isLoading">
-  <vue-cal
-    :time-from="8 * 60"
-    :time-to="19 * 60"
-    :time-step="30"
-    :events-on-month-view="'short'"
-    show-week-numbers
-    :disable-views="['years', 'year']"
-    style="height: 80vh; width: 80vw"
-    :splitDays="state.activeView === 'day' ? machines : undefined"
-    :events="state.activeView === 'day' ? [...events, ...closeDates] : [...events, ...closeDates].filter(event => !event.isMachineSlot)"
-    editable-events
-    v-model:active-view="state.activeView"
-  >
 
-    <template #event="{ event }">
-      <div 
-        v-if="event.isMachineSlot && state.activeView === 'day'"
-        class="event-cell"
-      >
-        <div class="event">
-          <div class="title">{{ event.title }}</div>
+    <vue-cal
+      :time-from="8 * 60"
+      :time-to="19 * 60"
+      :time-step="30"
+      :events-on-month-view="'short'"
+      show-week-numbers
+      :disable-views="['years', 'year']"
+      style="height: 80vh; width: 80vw"
+      :splitDays="state.activeView === 'day' ? machines : undefined"
+      :events="state.activeView === 'day' ? [...events, ...closeDates] : [...events, ...closeDates].filter(event => !event.isMachineSlot)"
+      editable-events
+      v-model:active-view="state.activeView"
+    >
+
+      <template #event="{ event }">
+        <div 
+          v-if="event.isMachineSlot && state.activeView === 'day'"
+          class="event-cell"
+        >
+          <div class="event">
+            <div class="title">{{ event.title }}</div>
+          </div>
+          <div class="assignees">
+              <div 
+                v-for="assignee in event.assignees" 
+                :key="assignee.id"
+                class="user-tag"
+                @mouseenter="showTooltip($event, assignee.email)"
+                @mouseleave="hideTooltip"
+              >
+                {{ assignee.first_name[0] }}{{ assignee.last_name[0] }}
+              </div>
+          </div>
         </div>
-        <div class="assignees">
-            <div 
-              v-for="assignee in event.assignees" 
-              :key="assignee.id"
-              class="user-tag"
-              @mouseenter="showTooltip($event, assignee.email)"
-              @mouseleave="hideTooltip"
-            >
-              {{ assignee.first_name[0] }}{{ assignee.last_name[0] }}
-            </div>
+        <div v-else>
+          {{ event.title }}
         </div>
-      </div>
-      <div v-else>
-        {{ event.title }}
-      </div>
-    </template>
-  </vue-cal>
-  </template>
-  <template v-else>
-    <div class="spin">Loading ...</div>
-  </template>
+      </template>
+    </vue-cal>
+
+  <!-- TOOLTIP -->
   <div v-show="tooltipVisible" ref="tooltip" class="tooltip" :style="tooltipStyle">
     {{ tooltipContent }}
   </div>
