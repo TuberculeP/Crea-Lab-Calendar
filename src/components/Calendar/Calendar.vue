@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
+import PreviewModal from "./PreviewModal.vue";
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 import { getMachines } from "../../utils/api/machines";
 import { getEvents } from "../../utils/api/events";
+import { generateEventColor } from "../../utils/events";
 import { getFormatedClosedPeriods } from "../../utils/api/closed-periods";
 
 const state = reactive({
@@ -14,6 +16,9 @@ const state = reactive({
 const machines = ref([]);
 const events = ref([]);
 const closeDates = ref([]);
+
+const showDialog = ref(false);
+const selectedEvent = ref(null);
 
 const tooltip = ref(null);
 const tooltipVisible = ref(false);
@@ -30,10 +35,10 @@ async function loadData() {
   closeDates.value = dates;
 
   state.isLoading = false;
-
-  // await getMachines().then((data) => {
-  //   machines.value = data;
-  // });
+  
+  await getMachines().then((data) => {
+      machines.value = data;
+  });
 
   await getEvents().then((data) => {
     events.value = data;
@@ -70,6 +75,9 @@ onMounted(() => {
       :time-step="30"
       :events-on-month-view="'short'"
       show-week-numbers
+      hide-weekends
+      today-button
+      :on-event-click="onEventClick"
       :disable-views="['years', 'year']"
       :disable-days="closeDates"
       style="height: 80vh; width: 80vw"
@@ -79,38 +87,34 @@ onMounted(() => {
           ? events
           : events.filter((event) => !event.isMachineSlot)
       "
-      editable-events
       v-model:active-view="state.activeView"
     >
+      >
       <template #event="{ event }">
-        <div
-          v-if="event.isMachineSlot && state.activeView === 'day'"
-          class="event-cell"
-        >
+        <div class="event-cell" :style="generateEventColor(event.title)">
           <div class="event">
             <div class="title">{{ event.title }}</div>
+            <p class="description">{{ event.description }}</p>
           </div>
           <div class="assignees">
             <div
-              v-for="assignee in event.assignees"
-              :key="assignee.id"
+              v-for="assignee in event.assignee"
+              :key="assignee.directus_users_id.id"
               class="user-tag"
-              @mouseenter="showTooltip($event, assignee.email)"
+              @mouseenter="
+                showTooltip($event, assignee.directus_users_id.email)
+              "
               @mouseleave="hideTooltip"
             >
-              {{ assignee.first_name[0] }}{{ assignee.last_name[0] }}
+              {{ assignee.directus_users_id.first_name[0]
+              }}{{ assignee.directus_users_id.last_name[0] }}
             </div>
           </div>
-        </div>
-        <div v-else>
-          {{ event.title }}
         </div>
       </template>
     </vue-cal>
   </template>
-  <template v-else>
-    <div class="spin">Loading ...</div>
-  </template>
+  <div v-else class="loader"></div>
   <div
     v-show="tooltipVisible"
     ref="tooltip"
@@ -119,13 +123,30 @@ onMounted(() => {
   >
     {{ tooltipContent }}
   </div>
+
+  <PreviewModal
+    v-if="showDialog"
+    :machines="machines"
+    v-model="showDialog"
+    :selectedEvent="selectedEvent"
+  />
 </template>
 
 <style scoped>
+.title {
+  font-size: large;
+  padding: 2px;
+}
+
+.description {
+  font-size: small;
+  padding: 2px;
+}
+
 .event {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
   justify-content: start;
   align-items: start;
 }
@@ -141,16 +162,23 @@ onMounted(() => {
 .assignees {
   display: flex;
   flex-direction: row;
-  gap: 2px;
+  gap: 4px;
+  padding: 4px;
   align-items: start;
   justify-content: center;
 }
 
 .user-tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: #f0f0f0;
+  color: #333;
   font-size: small;
+  height: 10px;
+  width: 10px;
   border-radius: 100%;
-  padding: 5px;
+  padding: 6px;
   cursor: pointer;
 }
 

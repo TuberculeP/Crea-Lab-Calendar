@@ -8,12 +8,12 @@ import {
   DialogRoot,
   DialogTitle,
   DialogTrigger,
-} from 'radix-vue'
-import { ref } from 'vue';
+} from "radix-vue";
+import { ref } from "vue";
 import { createClosedPeriod } from '../../utils/api/closed-periods';
 
-const startDate = ref('');
-const endDate = ref('');
+const startDate = ref("");
+const endDate = ref("");
 const monthlyRecurrent = ref(false);
 
 const validateForm = async () => {
@@ -28,77 +28,89 @@ const validateForm = async () => {
 
 <template>
   <DialogRoot>
-    <DialogTrigger
-      class="Button"
-    >
-      Add close date
-    </DialogTrigger>
+    <DialogTrigger class="Button"> Add close date </DialogTrigger>
     <DialogPortal>
       <DialogOverlay class="DialogOverlay" />
-      <DialogContent
-        class="DialogContent"
-      >
-        <DialogTitle class="DialogTitle">
-          Add close date
-        </DialogTitle>
+      <DialogContent class="DialogContent">
+        <DialogTitle class="DialogTitle"> Add close date </DialogTitle>
         <DialogDescription class="DialogDescription">
           Set a date when the CreaLab will be closed.
         </DialogDescription>
         <fieldset class="Fieldset">
-          <label
-            class="Label"
-            for="start-date"
-          > Start Date </label>
+          <label class="Label" for="start-date"> Start Date </label>
           <input
             id="start-date"
             type="date"
             class="Input"
             v-model="startDate"
-          >
+          />
         </fieldset>
         <fieldset class="Fieldset">
-          <label
-            class="Label"
-            for="end-date"
-          > End Date </label>
+          <label class="Label" for="end-date"> End Date </label>
           <input
             id="end-date"
             type="date"
             class="Input"
             v-model="endDate"
-          >
+          />
         </fieldset>
         <!-- monthly reccurent checkbox -->
         <fieldset class="Fieldset">
-          <label
-            class="Label"
-            for="monthly-reccurent"
-          > Monthly reccurent </label>
+          <label class="Label" for="monthly-reccurent">
+            Monthly reccurent
+          </label>
           <label class="CustomCheckbox">
             <input
               id="monthly-reccurent"
               type="checkbox"
               class="Checkbox"
               v-model="monthlyRecurrent"
+            />
+            <svg
+              class="CheckboxIcon"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
             >
-            <svg class="CheckboxIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
           </label>
         </fieldset>
-        <div :style="{ display: 'flex', marginTop: 25, justifyContent: 'flex-end' }">
+        <div
+          :style="{
+            display: 'flex',
+            marginTop: 25,
+            justifyContent: 'flex-end',
+          }"
+        >
           <DialogClose as-child>
-            <button
-              class="Button orange"
-              @click="validateForm"
-            >
+            <button class="Button orange" @click="validateForm">
               Add close date
             </button>
           </DialogClose>
         </div>
-        <DialogClose
-          class="IconButton"
-          aria-label="Close"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        <DialogClose class="IconButton" aria-label="Close">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-x"
+          >
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
         </DialogClose>
       </DialogContent>
     </DialogPortal>
@@ -108,8 +120,7 @@ const validateForm = async () => {
 <style scoped>
 /* reset */
 button,
-fieldset
-{
+fieldset {
   all: unset;
 }
 
@@ -128,7 +139,8 @@ fieldset
 .DialogContent {
   background-color: #ffffff;
   border-radius: 6px;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 10px 38px -10px, rgba(0, 0, 0, 0.2) 0px 10px 20px -15px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 10px 38px -10px,
+    rgba(0, 0, 0, 0.2) 0px 10px 20px -15px;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -168,7 +180,7 @@ fieldset
   line-height: 1;
   font-weight: 500;
   height: 35px;
-  background-color: #FF6934;
+  background-color: #ff6934;
 }
 .Button.grass {
   background-color: #ffffff;
@@ -218,12 +230,12 @@ fieldset
   gap: 20px;
   align-items: center;
   margin-bottom: 15px;
-  border: none
+  border: none;
 }
 
 .Label {
   font-size: 15px;
-  color: #FF6934; /* var(--grass-11) replaced */
+  color: #ff6934; /* var(--grass-11) replaced */
   width: 90px;
   text-align: right;
 }
@@ -239,9 +251,9 @@ fieldset
   font-size: 15px;
   line-height: 1;
   color: #ffffff; /* var(--grass-11) replaced */
-  box-shadow: 0 0 0 1px #FF6934; /* var(--grass-7) replaced */
+  box-shadow: 0 0 0 1px #ff6934; /* var(--grass-7) replaced */
   height: 35px;
-  background-color: #FF6934;
+  background-color: #ff6934;
 }
 .Input:focus {
   box-shadow: 0 0 0 2px #48bb78; /* var(--grass-8) replaced */
@@ -281,7 +293,7 @@ fieldset
 
 /* When the checkbox is checked, change the background and show the SVG */
 .Checkbox:checked + .CheckboxIcon {
-  background-color: #FF6934;    /* Green background when checked */
+  background-color: #ff6934; /* Green background when checked */
   border-color: #ff7848; /* Darker green border when checked */
   stroke: white; /* Show the white checkmark */
 }

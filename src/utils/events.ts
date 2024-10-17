@@ -13,37 +13,37 @@ export function formatEvent(event: any) {
     start: formatTimestamp(event.start_date),
     end: formatTimestamp(event.end_date),
     assignee: event.assignee ? event.assignee : [],
-    split: event.machine_id ? event.machine_id : 1,
+    split: event.machine_id ? event.machine_id : -1,
     isMachineSlot: event.machine_id ? true : false,
   };
 }
+
 export const formatMachinesForCalendar = (machines: any) => {
-  return machines.map((machine: any) => {
-    return {
+  return [
+    {
+      id: -1,
+      class: "room",
+      label: "Crealab",
+    },
+    ...machines.map((machine: any) => ({
       id: machine.id,
+      class: machine.name.toLowerCase().replace(" ", "-"),
       label: machine.name,
-      class: machine.name,
-    };
-  });
+    })),
+  ];
 };
 
-// TODO : to remove / fake calls to populate the calendar
+export function generateEventColor(eventName: string) {
+  let hash = 0;
+  for (let i = 0; i < eventName.length; i++) {
+    hash = eventName.charCodeAt(i) + ((hash << 5) - hash);
+  }
 
-export async function getMachines() {
-  const machines = [
-    {
-      id: 1,
-      name: "Salle",
-    },
-    {
-      id: 2,
-      name: "Imprimante 3d",
-    },
-    {
-      id: 3,
-      name: "Machine a coudre",
-    },
-  ];
+  let color = "#";
+  for (let i = 0; i < 3; i++) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += ("00" + value.toString(16)).substr(-2);
+  }
 
-  return formatMachinesForCalendar(machines);
+  return { backgroundColor: color, borderColor: color, color: "white" };
 }
