@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import Calendar from "./Calendar/Calendar.vue";
-import Modal from "./Calendar/CloseDateModal.vue";
+import CloseDateModal from "./Calendar/CloseDateModal.vue";
 import CloseDateTable from "./Calendar/CloseDateTable.vue";
 import { apiClient } from "../utils/api/api_client";
 import { readItems } from "@directus/sdk";
+import CreateModal from "./Calendar/CreateModal.vue";
 
 const isLoading = ref(true);
 
@@ -22,7 +23,8 @@ onMounted(async () => {
 
       <div class="admin-panel">
         <p>Admin actions</p>
-        <Modal :isVisible="true" :bodyComponent="Calendar" />
+        <CloseDateModal :isVisible="true" :bodyComponent="Calendar" />
+        <CreateModal />
       </div>
     </div>
     <Calendar />

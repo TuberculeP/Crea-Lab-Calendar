@@ -10,63 +10,94 @@ import {
   DialogTrigger,
 } from "radix-vue";
 import { ref } from "vue";
-import { createClosedPeriod } from '../../utils/api/closed-periods';
+import {apiClient} from "../../utils/api/api_client.ts";
+import {createItems, updateItems} from "@directus/sdk";
 
+const title = ref("");
+const description = ref("");
 const startDate = ref("");
 const endDate = ref("");
-const monthlyRecurrent = ref(false);
 
 const validateForm = async () => {
-  await createClosedPeriod({
+  const payload = {
+    title: title.value,
+    description: description.value,
     start_date: startDate.value,
     end_date: endDate.value,
-  });
+  }
+
+  try {
+    const res = await apiClient.request(createItems("CalendarEvent", payload));
+    console.log("Mise à jour réussie :", res);
+    location.reload();
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour :", error);
+  }
 }
 
 </script>
 
 <template>
   <DialogRoot>
-    <DialogTrigger class="Button"> Add close date </DialogTrigger>
+    <DialogTrigger class="Button"> Add event </DialogTrigger>
     <DialogPortal>
       <DialogOverlay class="DialogOverlay" />
       <DialogContent class="DialogContent">
-        <DialogTitle class="DialogTitle"> Add close date </DialogTitle>
+        <DialogTitle class="DialogTitle"> Add event </DialogTitle>
         <DialogDescription class="DialogDescription">
-          Set a date when the CreaLab will be closed.
+          Book a slot when you want to go to CreaLab.
         </DialogDescription>
+        <fieldset class="Fieldset">
+          <label class="Label" for="start-date"> Title </label>
+          <input
+              id="title"
+              type="text"
+              class="Input"
+              v-model="title"
+          />
+        </fieldset>
+        <fieldset class="Fieldset">
+          <label class="Label" for="description"> Description </label>
+          <textarea
+              id="description"
+              type="text"
+              class="Input Textarea"
+              v-model="description"
+          />
+        </fieldset>
         <fieldset class="Fieldset">
           <label class="Label" for="start-date"> Start Date </label>
           <input
-            id="start-date"
-            type="datetime-local"
-            class="Input"
-            v-model="startDate"
+              id="start-date"
+              type="datetime-local"
+              class="Input"
+              v-model="startDate"
           />
         </fieldset>
         <fieldset class="Fieldset">
           <label class="Label" for="end-date"> End Date </label>
           <input
-            id="end-date"
-            type="datetime-local"
-            class="Input"
-            v-model="endDate"
+              id="end-date"
+              type="datetime-local"
+              class="Input"
+              v-model="endDate"
           />
         </fieldset>
-        <!-- monthly reccurent checkbox -->
-        <fieldset class="Fieldset">
-          <label class="Label" for="monthly-reccurent">
-            Monthly reccurent
-          </label>
-          <label class="CustomCheckbox">
-            <input
-              id="monthly-reccurent"
-              type="checkbox"
-              class="Checkbox"
-              v-model="monthlyRecurrent"
-            />
-            <svg
-              class="CheckboxIcon"
+        <div
+            :style="{
+            display: 'flex',
+            marginTop: 25,
+            justifyContent: 'flex-end',
+          }"
+        >
+          <DialogClose as-child>
+            <button class="Button orange" @click="validateForm">
+              Add event
+            </button>
+          </DialogClose>
+        </div>
+        <DialogClose class="IconButton" aria-label="Close">
+          <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
               height="24"
@@ -76,36 +107,7 @@ const validateForm = async () => {
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
-            >
-              <path d="M20 6 9 17l-5-5" />
-            </svg>
-          </label>
-        </fieldset>
-        <div
-          :style="{
-            display: 'flex',
-            marginTop: 25,
-            justifyContent: 'flex-end',
-          }"
-        >
-          <DialogClose as-child>
-            <button class="Button orange" @click="validateForm">
-              Add close date
-            </button>
-          </DialogClose>
-        </div>
-        <DialogClose class="IconButton" aria-label="Close">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-x"
+              class="lucide lucide-x"
           >
             <path d="M18 6 6 18" />
             <path d="m6 6 12 12" />
@@ -139,7 +141,7 @@ fieldset {
   background-color: #ffffff;
   border-radius: 6px;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 10px 38px -10px,
-    rgba(0, 0, 0, 0.2) 0px 10px 20px -15px;
+  rgba(0, 0, 0, 0.2) 0px 10px 20px -15px;
   position: fixed;
   top: 50%;
   left: 50%;

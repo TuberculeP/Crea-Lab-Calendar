@@ -8,21 +8,49 @@ import {
   DialogPortal,
   DialogRoot,
   DialogTitle,
-  DialogTrigger,
 } from "radix-vue";
+import {updateItem} from "@directus/sdk";
+import {apiClient} from "../../utils/api/api_client.ts";
 
 const props = defineProps({
   selectedEvent: Object,
   modelValue: Boolean,
   machines: Array,
+  editable: Boolean,
 });
+
+const title = ref(props.selectedEvent?.title);
+const description = ref(props.selectedEvent?.description);
+const startDate = ref(props.selectedEvent?.start ? new Date(props.selectedEvent.start).toISOString().slice(0, 16) : '');
+const endDate = ref(props.selectedEvent?.end ? new Date(props.selectedEvent.end).toISOString().slice(0, 16) : '');
 
 const emit = defineEmits(["update:modelValue"]);
 
 const updateModelValue = (newValue) => {
   emit("update:modelValue", newValue);
 };
+
+const validateForm = async () => {
+  const payload = {
+    event_id: props.selectedEvent?.id,
+    title: title.value,
+    description: description.value,
+    start_date: startDate.value,
+    end_date: endDate.value,
+  }
+
+  try {
+    const res = await apiClient.request(updateItem("CalendarEvent", props.selectedEvent?.id, payload ));
+    console.log("Mise à jour réussie :", res);
+    updateModelValue(false);
+    location.reload();
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour :", error);
+  }
+}
+
 </script>
+
 <template>
   <DialogRoot
     v-if="props.selectedEvent"
@@ -31,7 +59,67 @@ const updateModelValue = (newValue) => {
   >
     <DialogOverlay class="DialogOverlay" />
     <DialogPortal>
-      <DialogContent class="DialogContent">
+      <DialogTitle class="DialogTitle"> Update event </DialogTitle>
+      <DialogDescription class="DialogDescription">
+        Modify your slot.
+      </DialogDescription>
+      <DialogContent v-if="editable" class="DialogContent">
+        <fieldset class="Fieldset">
+          <label class="Label" for="start-date"> Title </label>
+          <input
+              id="title"
+              type="text"
+              class="Input"
+              v-model="title"
+              :placeholder="props.selectedEvent?.title"
+          />
+        </fieldset>
+        <fieldset class="Fieldset">
+          <label class="Label" for="description"> Description </label>
+          <textarea
+              id="description"
+              type="text"
+              class="Input Textarea"
+              v-model="description"
+              :placeholder="props.selectedEvent?.description"
+          />
+        </fieldset>
+        <fieldset class="Fieldset">
+          <label class="Label" for="start-date"> Start Date </label>
+          <input
+              id="start-date"
+              type="datetime-local"
+              class="Input"
+              v-model="startDate"
+              :placeholder="props.selectedEvent?.startDate"
+          />
+        </fieldset>
+        <fieldset class="Fieldset">
+          <label class="Label" for="end-date"> End Date </label>
+          <input
+              id="end-date"
+              type="datetime-local"
+              class="Input"
+              v-model="endDate"
+              :placeholder="props.selectedEvent?.endDate"
+          />
+        </fieldset>
+        <div
+            :style="{
+            display: 'flex',
+            marginTop: 25,
+            justifyContent: 'flex-end',
+          }"
+        >
+          <DialogClose as-child>
+            <button class="Button orange" @click="validateForm">
+              Update event
+            </button>
+          </DialogClose>
+        </div>
+      </DialogContent>
+
+      <DialogContent v-else>
         <DialogTitle class="DialogTitle">
           <h1>
             {{ props.selectedEvent?.title }}
@@ -43,22 +131,22 @@ const updateModelValue = (newValue) => {
             <p>
               {{
                 props.machines.find(
-                  (machine) => machine.id === selectedEvent.split
+                    (machine) => machine.id === selectedEvent.split
                 ).label
               }}
             </p>
           </div>
 
-          <div v-if="props?.selectedEvent?.description">
+          <div v-if="props.selectedEvent?.description">
             <h3>Description:</h3>
-            <p>{{ props.selectedEvent.description }}</p>
+            <p>{{ props.selectedEvent?.description }}</p>
           </div>
 
           <div v-if="props.selectedEvent?.assignee?.length > 0">
             <h3>Participants :</h3>
             <div
-              class="assignees-on-card"
-              v-for="assignee in props.selectedEvent.assignee"
+                class="assignees-on-card"
+                v-for="assignee in props.selectedEvent.assignee"
             >
               <div class="user-tag">
                 {{ assignee.directus_users_id.first_name[0]
@@ -81,6 +169,7 @@ const updateModelValue = (newValue) => {
           <button class="Button" @click="updateModelValue(false)">Close</button>
         </DialogClose>
       </DialogContent>
+
     </DialogPortal>
   </DialogRoot>
 </template>
@@ -140,6 +229,71 @@ fieldset {
   color: #4b5563; /* var(--mauve-11) replaced */
   font-size: 15px;
   line-height: 1.5;
+}
+
+.Fieldset {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 15px;
+  border: none;
+}
+
+.Label {
+  font-size: 15px;
+  color: #ff6934; /* var(--grass-11) replaced */
+  width: 90px;
+  text-align: right;
+}
+
+.Input {
+  font-family: monospace;
+  letter-spacing: normal;
+  width: 100%;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  border: 1px solid black;
+  padding: 0 10px;
+  font-size: 15px;
+  line-height: 1;
+  color: #ffffff; /* var(--grass-11) replaced */
+  box-shadow: 0 0 0 1px #ff6934; /* var(--grass-7) replaced */
+  height: 35px;
+  background-color: #ff6934;
+  resize: none;
+}
+.Input:focus {
+  box-shadow: 0 0 0 2px #48bb78; /* var(--grass-8) replaced */
+}
+
+.Textarea {
+  height: 150px;
+  padding: 10px;
+}
+
+.Button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  padding: 0 15px;
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 500;
+  height: 35px;
+  background-color: #ff6934;
+}
+.Button.orange {
+  background-color: #ff7848; /* var(--green-4) replaced */
+  color: white; /* var(--green-11) replaced */
+}
+.Button.orange:hover {
+  background-color: #ff6934; /* var(--green-5) replaced */
+}
+.Button.orange:focus {
+  box-shadow: 0 0 0 2px #ff6934; /* var(--green-7) replaced */
 }
 
 .title {

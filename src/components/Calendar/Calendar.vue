@@ -64,6 +64,7 @@ function hideTooltip() {
 
 function onEventClick(event) {
   selectedEvent.value = event;
+  console.log(event);
   showDialog.value = true;
 }
 
@@ -134,7 +135,9 @@ onMounted(() => {
     :machines="machines"
     v-model="showDialog"
     :selectedEvent="selectedEvent"
+    :editable="true"
   />
+
 </template>
 
 <style scoped>
